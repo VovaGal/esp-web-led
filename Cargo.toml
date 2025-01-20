@@ -1,5 +1,5 @@
 [package]
-name = "idf-testy"
+name = "esp-web-led"
 version = "0.1.0"
 authors = ["VovaGal"]
 edition = "2021"
@@ -7,7 +7,7 @@ resolver = "2"
 rust-version = "1.77"
 
 [[bin]]
-name = "idf-testy"
+name = "esp-web-led"
 harness = false # do not use the built in cargo test harness -> resolve rust-analyzer errors
 
 [profile.release]
@@ -29,7 +29,7 @@ embedded-svc = { version = "0.28", default-features = false }
 serde = { version = "1", default-features = false, features = ["derive"] }
 serde_json = { version = "1", default-features = false, features = ["alloc"] }
 anyhow = "1"
-rgb-led     = { path = "../std-training/common/lib/rgb-led" }
+rgb-led     = { path = "./lib/rgb-led" }
 
 [build-dependencies]
 embuild = "0.33"
