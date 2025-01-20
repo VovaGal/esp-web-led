@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ESP-RS JSON Post Handler</title>
+    <style type="text/css">
+        body {
+            max-width: 50em;
+            margin: auto;
+            padding: 1em;
+            font: 1em/1.65 sans-serif;
+        }
+
+        input {
+            width: 100%;
+            height: 3em;
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="the-form" action="/post" method="post" accept-charset="utf-8">
+        <!-- <label for="lp">Light Power:</label>
+        <input type="number" id="lp" name="lp" min="0" max="255"><br>
+        <input type="submit" value="Submit"> -->
+        <p id="rgb_p">Red: 50 Green: 50 Blue: 50</p>
+        <div class="slidecontainer" id="rgb">
+            <input type="range" min="0" max="255" value="50" class="slider" id="r-range">
+            <input type="range" min="0" max="255" value="50" class="slider" id="g-range">
+            <input type="range" min="0" max="255" value="50" class="slider" id="b-range">
+        </div>
+
+    </form>
+    <p id="server-resp"></p>
+
+    <script type="text/javascript">
+
+        let theForm = document.getElementById("the-form");
+        let lprange = document.getElementById("lp-range");
+        let serverResp = document.getElementById("server-resp");
+        let rgb_ranges = document.getElementById("rgb")
+        let url = theForm.action;
+        let rgb_p = document.getElementById("rgb_p")
+
+        let red_v = 50
+        let green_v = 50
+        let blue_v = 50
+
+        rgb_ranges.addEventListener("input", async (e) => {
+            e.preventDefault()
+            let led_target = e.target
+            let led_id = led_target.id
+            let led_value = led_target.value
+            // console.log(led_target)
+            switch (led_id) {
+                case 'r-range':
+                    red_v = led_value
+                    break
+                case 'g-range':
+                    green_v = led_value
+                    break
+                case 'b-range':
+                    blue_v = led_value
+                    break
+            }
+            // console.log(`${red_v} ${green_v} ${blue_v}`)
+
+            try {
+                let entries = Object()
+                entries['r'] = parseInt(red_v)
+                entries['g'] = parseInt(green_v)
+                entries['b'] = parseInt(blue_v)
+
+                rgb_p.innerText = `Red: ${red_v} Green: ${green_v} Blue: ${blue_v}`
+                let resp = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify(entries),
+                });
+                // rgb_p.innerText = await resp.text()
+            } catch (err) {
+                console.error(err);
+            }
+
+        })
+
+        theForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            let form = e.currentTarget;
+            let url = form.action;
+
+            try {
+                let entries = Object.fromEntries(new FormData(form).entries());
+                entries["lp"] = parseInt(entries["lp"]);
+                let resp = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify(entries),
+                });
+                serverResp.innerText = await resp.text();
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
+        lprange.addEventListener('input', async (e) => {
+            e.preventDefault();
+
+            let v = this.value;
+
+            try {
+                let entries = Object();
+                entries["r"] = parseInt(e.target.value);
+                entries["g"] = parseInt(e.target.value);
+                entries["b"] = parseInt(e.target.value);
+                let resp = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify(entries),
+                });
+                serverResp.innerText = await resp.text();
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
+    </script>
+</body>
+
+</html>
