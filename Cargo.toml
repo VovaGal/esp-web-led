@@ -25,11 +25,15 @@ experimental = ["esp-idf-svc/experimental"]
 [dependencies]
 log = "0.4"
 esp-idf-svc = { version = "0.50.1", features = ["critical-section", "embassy-time-driver", "embassy-sync"] }
+esp-idf-hal ={ version = "=0.45.0", features = ["rmt-legacy"] }
 embedded-svc = { version = "0.28", default-features = false }
 serde = { version = "1", default-features = false, features = ["derive"] }
 serde_json = { version = "1", default-features = false, features = ["alloc"] }
 anyhow = "1"
 rgb-led     = { path = "./lib/rgb-led" }
+
+embedded-hal = "1"
+embedded-hal-0-2 = { package = "embedded-hal", version = "0.2.7", features = ["unproven"] }
 
 [build-dependencies]
 embuild = "0.33"
