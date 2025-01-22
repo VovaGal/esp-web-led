@@ -49,12 +49,23 @@
         let green_v = 50
         let blue_v = 50
 
+        let start = Date.now();
+
         rgb_ranges.addEventListener("input", async (e) => {
             e.preventDefault()
             let led_target = e.target
             let led_id = led_target.id
             let led_value = led_target.value
             // console.log(led_target)
+
+            let now = Date.now();
+
+            if (now - start <= 100) {
+                return;
+            }
+
+            start = now;
+
             switch (led_id) {
                 case 'r-range':
                     red_v = led_value
